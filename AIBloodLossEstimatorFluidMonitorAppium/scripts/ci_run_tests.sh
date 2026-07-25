@@ -3,6 +3,9 @@ set -e
 
 echo "Starting CI Test Run Pipeline..."
 
+# Switch to the Appium directory
+cd AIBloodLossEstimatorFluidMonitorAppium || exit 1
+
 # 1. Install Debug APK
 if [ -z "$APK_PATH" ]; then
     echo "Warning: APK_PATH is not set. Assuming app is already installed or handled by capabilities."
