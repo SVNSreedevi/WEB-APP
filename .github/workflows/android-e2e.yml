@@ -35,8 +35,8 @@ jobs:
       run: |
         cd AIBloodLossEstimatorFluidMonitorAppium
         npm install
-        # Install uiautomator2 driver using Appium CLI
-        npx appium driver install uiautomator2
+        # Install uiautomator2 driver using Appium CLI, ignore if already installed
+        npx appium driver install uiautomator2 || true
 
     - name: Build Debug APK
       run: |
