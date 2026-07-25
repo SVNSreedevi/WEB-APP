@@ -16,10 +16,10 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -44,23 +44,21 @@ jobs:
 
     - name: Upload Excel Report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: E2E-Excel-Report
         path: e2e/reports/excel/E2E_Report.xlsx
 
-
-
     - name: Upload Screenshots on Failure
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Error-Screenshots
         path: e2e/reports/failures/
 
     - name: Upload Execution Logs
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Execution-Logs
         path: e2e/logs/
