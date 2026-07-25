@@ -38,12 +38,12 @@ jobs:
         # Install uiautomator2 driver using Appium CLI, ignore if already installed
         npx appium driver install uiautomator2 || true
 
-    - name: Build Debug APK
-      run: |
-        # Ensure gradlew has execute permission
-        chmod +x ./gradlew || true
-        ./gradlew assembleDebug --no-daemon
-      # Assuming gradle wrapper is in root
+    # - name: Build Debug APK
+    #   run: |
+    #     # Ensure gradlew has execute permission
+    #     chmod +x ./gradlew || true
+    #     ./gradlew assembleDebug --no-daemon
+    #   # Assuming gradle wrapper is in root
 
     - name: Make CI Script Executable
       run: chmod +x AIBloodLossEstimatorFluidMonitorAppium/scripts/ci_run_tests.sh
@@ -56,10 +56,10 @@ jobs:
 
     - name: Run Appium Tests on Emulator
       uses: reactivecircus/android-emulator-runner@v2
-      env:
+      # env:
         # Pass the built APK path to the script
         # Depending on app structure, this path might change
-        APK_PATH: app/build/outputs/apk/debug/app-debug.apk 
+        # APK_PATH: app/build/outputs/apk/debug/app-debug.apk 
       with:
         api-level: 29
         profile: Nexus 6
