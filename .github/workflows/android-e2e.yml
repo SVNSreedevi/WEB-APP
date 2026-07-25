@@ -80,23 +80,30 @@ jobs:
           AIBloodLossEstimatorFluidMonitorAppium/execution-report.xlsx
         retention-days: 30
 
+    - name: Gather Reports for Deployment
+      if: always()
+      run: |
+        mkdir -p deploy_reports
+        cp AIBloodLossEstimatorFluidMonitorAppium/execution-report.html deploy_reports/ || true
+        cp AIBloodLossEstimatorFluidMonitorAppium/execution-report.xlsx deploy_reports/ || true
+        if [ ! -f deploy_reports/execution-report.html ]; then
+          echo "<h1>Fatal Error: HTML Report not generated. Check Excel fallback or CI logs.</h1>" > deploy_reports/execution-report.html
+        fi
+
     - name: Deploy HTML Report to GitHub Pages
       if: always()
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages
-        folder: AIBloodLossEstimatorFluidMonitorAppium
+        folder: deploy_reports
         target-folder: reports/latest
         clean: true
-        # Optional: You can copy the same file to a history directory to keep old reports
-        # A separate step or a script would be needed to handle the build history, 
-        # but JamesIves action supports pushing to multiple folders sequentially.
 
     - name: Deploy History HTML Report to GitHub Pages
       if: always()
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages
-        folder: AIBloodLossEstimatorFluidMonitorAppium
+        folder: deploy_reports
         target-folder: reports/history/build-${{ github.run_number }}
         clean: false
