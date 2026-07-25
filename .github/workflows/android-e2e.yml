@@ -1,0 +1,99 @@
+name: Android Appium E2E (1100+)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  android-e2e-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: AIBloodLossEstimatorFluidMonitorAppium/package.json
+
+    - name: Install Dependencies
+      run: |
+        cd AIBloodLossEstimatorFluidMonitorAppium
+        npm install
+        # Install uiautomator2 driver using Appium CLI
+        npx appium driver install uiautomator2
+
+    - name: Build Debug APK
+      run: |
+        # Ensure gradlew has execute permission
+        chmod +x ./gradlew || true
+        ./gradlew assembleDebug --no-daemon
+      # Assuming gradle wrapper is in root
+
+    - name: Make CI Script Executable
+      run: chmod +x AIBloodLossEstimatorFluidMonitorAppium/scripts/ci_run_tests.sh
+
+    - name: Enable KVM for Android Emulator
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: Run Appium Tests on Emulator
+      uses: reactivecircus/android-emulator-runner@v2
+      env:
+        # Pass the built APK path to the script
+        # Depending on app structure, this path might change
+        APK_PATH: app/build/outputs/apk/debug/app-debug.apk 
+      with:
+        api-level: 29
+        profile: Nexus 6
+        target: default
+        arch: x86
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
+        script: ./AIBloodLossEstimatorFluidMonitorAppium/scripts/ci_run_tests.sh
+
+    - name: Upload Test Reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-reports
+        path: |
+          AIBloodLossEstimatorFluidMonitorAppium/execution-report.html
+          AIBloodLossEstimatorFluidMonitorAppium/execution-report.xlsx
+        retention-days: 30
+
+    - name: Deploy HTML Report to GitHub Pages
+      if: always()
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: AIBloodLossEstimatorFluidMonitorAppium
+        target-folder: reports/latest
+        clean: true
+        # Optional: You can copy the same file to a history directory to keep old reports
+        # A separate step or a script would be needed to handle the build history, 
+        # but JamesIves action supports pushing to multiple folders sequentially.
+
+    - name: Deploy History HTML Report to GitHub Pages
+      if: always()
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: AIBloodLossEstimatorFluidMonitorAppium
+        target-folder: reports/history/build-${{ github.run_number }}
+        clean: false
