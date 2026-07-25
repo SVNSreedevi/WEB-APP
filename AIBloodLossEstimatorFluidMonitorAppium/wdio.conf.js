@@ -11,6 +11,10 @@ exports.config = {
     port: 4723, // Appium port
     path: '/',
 
+    autoCompileOpts: {
+        autoCompile: false
+    },
+
     // Specs
     specs: [
         process.env.WDIO_CI_SPEC || './tests/12_e2e/mega_android_1100.test.js'
