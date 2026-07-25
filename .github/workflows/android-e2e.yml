@@ -10,6 +10,9 @@ on:
 jobs:
   android-e2e-tests:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     
     steps:
     - name: Checkout Code
