@@ -1,0 +1,26 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --timeout 60000 --file tests/BaseTest.js tests/**/*.test.js --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=E2E_Report",
+    "test:dynamic": "mocha --timeout 60000 --file tests/BaseTest.js tests/dynamic/**/*.test.js",
+    "generate-tests": "node utilities/TestGenerator.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chai": "^4.5.0",
+    "concurrently": "^10.0.4",
+    "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
+    "glob": "^13.0.6",
+    "mocha": "^11.7.6",
+    "mochawesome": "^7.1.4",
+    "selenium-webdriver": "^4.46.0",
+    "winston": "^3.19.0"
+  }
+}

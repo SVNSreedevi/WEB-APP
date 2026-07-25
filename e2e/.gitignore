@@ -1,0 +1,5 @@
+node_modules/
+reports/excel/
+reports/failures/
+logs/
+mochawesome-report/

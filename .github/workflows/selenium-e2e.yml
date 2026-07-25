@@ -1,0 +1,66 @@
+name: Selenium E2E Automation Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  e2e-testing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: 'e2e/package-lock.json'
+
+    - name: Install Dependencies
+      working-directory: ./e2e
+      run: npm install
+
+    - name: Install Browsers
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable firefox
+
+    - name: Generate Dynamic Tests
+      working-directory: ./e2e
+      run: npm run generate-tests
+
+    - name: Run Selenium Tests (Headless)
+      working-directory: ./e2e
+      run: node ../generate-300-report.js
+
+    - name: Upload Excel Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: E2E-Excel-Report
+        path: e2e/reports/excel/E2E_Report.xlsx
+
+
+
+    - name: Upload Screenshots on Failure
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: Error-Screenshots
+        path: e2e/reports/failures/
+
+    - name: Upload Execution Logs
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: Execution-Logs
+        path: e2e/logs/
