@@ -1,0 +1,9 @@
+{
+  "appId": "com.fluidmonitor.app",
+  "appName": "FluidMonitor",
+  "webDir": "dist",
+  "server": {
+    "cleartext": true,
+    "androidScheme": "http"
+  }
+}

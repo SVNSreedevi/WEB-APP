@@ -3,11 +3,34 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
+const { spawn } = require('child_process');
+const path = require('path');
+
+// Automatically spawn the Python AI Service
+const pythonExe = process.env.NODE_ENV === 'production' 
+  ? 'python3' 
+  : /^win/.test(process.platform) 
+    ? path.join(__dirname, '..', 'AI_Model', 'venv', 'Scripts', 'python.exe')
+    : path.join(__dirname, '..', 'AI_Model', 'venv', 'bin', 'python');
+
+const aiProcess = spawn(pythonExe, ['ai_service.py'], {
+  cwd: path.join(__dirname, '..', 'AI_Model'),
+  stdio: 'inherit',
+  shell: true
+});
+
+const cleanup = () => {
+  if (aiProcess) aiProcess.kill();
+};
+process.on('exit', cleanup);
+process.on('SIGINT', () => { cleanup(); process.exit(); });
+process.on('SIGTERM', () => { cleanup(); process.exit(); });
+process.on('SIGUSR2', () => { cleanup(); process.exit(); });
 
 const app = express();
 connectDB();
 
-app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(morgan('dev'));

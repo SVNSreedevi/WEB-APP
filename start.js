@@ -15,15 +15,28 @@ const client = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['run', 
   shell: true
 });
 
+// Run the Python AI Service
+const pythonExe = /^win/.test(process.platform) 
+  ? path.join(__dirname, 'AI_Model', 'venv', 'Scripts', 'python.exe')
+  : path.join(__dirname, 'AI_Model', 'venv', 'bin', 'python');
+
+const aiService = spawn(pythonExe, ['ai_service.py'], {
+  cwd: path.join(__dirname, 'AI_Model'),
+  stdio: 'inherit',
+  shell: true
+});
+
 // Handle termination
 process.on('SIGINT', () => {
   server.kill('SIGINT');
   client.kill('SIGINT');
+  aiService.kill('SIGINT');
   process.exit();
 });
 
 process.on('SIGTERM', () => {
   server.kill('SIGTERM');
   client.kill('SIGTERM');
+  aiService.kill('SIGTERM');
   process.exit();
 });

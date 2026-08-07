@@ -10,6 +10,9 @@
     "preview": "node node_modules/vite/bin/vite.js preview"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
     "axios": "^1.16.0",
     "framer-motion": "^12.38.0",
     "html2canvas": "^1.4.1",

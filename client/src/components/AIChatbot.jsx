@@ -75,10 +75,28 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
     }
   };
 
-  // Auto-run analysis on mount
+  // Auto-run analysis on mount and fetch history
   useEffect(() => {
     runAnalysis();
+    fetchHistory();
   }, []);
+
+  const fetchHistory = async () => {
+    try {
+      const pId = patientData?._id || patientData?.id;
+      if (!pId) return;
+      
+      // Don't fetch history for demo/mock patients to avoid 400 errors
+      if (pId.toString().startsWith('mock-') || pId.toString().startsWith('demo-')) return;
+      
+      const { data } = await api.get(`/ai/chat/${pId}`);
+      if (data && data.length > 0) {
+        setMessages(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch chat history', err);
+    }
+  };
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -111,20 +129,25 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
     setSending(true);
 
     const userMsg = { role: 'user', content: q };
+    
+    // We pass the existing messages to the backend to maintain context
+    const currentHistory = [...messages];
+    
     setMessages(prev => [...prev, userMsg]);
 
     try {
       const { data } = await api.post('/ai/analyze', {
         patientData,
         surgeryData,
-        question: q
+        question: q,
+        chatHistory: currentHistory // pass history to maintain context
       });
       const answer = data.answer || 'No response received.';
       setMessages(prev => [...prev, { role: 'ai', content: answer }]);
     } catch (err) {
       setMessages(prev => [...prev, {
         role: 'ai',
-        content: '⚠️ Could not get a response. Please check your internet connection or API configuration.'
+        content: 'AI Medical Assistant is temporarily unavailable. Please try again later.'
       }]);
     } finally {
       setSending(false);
@@ -155,30 +178,30 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="w-full max-w-5xl h-[90vh] flex flex-col rounded-[28px] overflow-hidden border border-slate-700/50"
-        style={{ background: 'linear-gradient(135deg, #0d1117 0%, #0f172a 50%, #0c1428 100%)' }}
+        className="w-full max-w-5xl h-[95vh] sm:h-[90vh] flex flex-col rounded-[28px] sm:rounded-[28px] rounded-b-none sm:rounded-b-[28px] overflow-hidden border border-slate-700/50"
+        style={{ background: 'linear-gradient(135deg, #0d1117 0%, #0f172a 50%, #0c1428 100%)', marginTop: 'auto' }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800/50"
+        <div className="flex flex-wrap items-center justify-between px-4 lg:px-6 py-3 lg:py-4 gap-2 border-b border-slate-800/50"
           style={{ background: 'linear-gradient(90deg, rgba(139,92,246,0.15), rgba(59,130,246,0.10))' }}>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-lg"
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-2xl flex items-center justify-center text-xl lg:text-2xl shadow-lg"
               style={{ background: 'linear-gradient(135deg, #7c3aed, #3b82f6)' }}>
               <FaBrain className="text-white" />
             </div>
             <div>
-              <h2 className="text-white font-black text-xl tracking-tight">AI Medical Assistant</h2>
-              <p className="text-violet-300/70 text-xs font-bold uppercase tracking-widest mt-0.5">
+              <h2 className="text-white font-black text-base lg:text-xl tracking-tight">AI Medical Assistant</h2>
+              <p className="text-violet-300/70 text-[9px] lg:text-[10px] font-bold uppercase tracking-widest mt-0.5">
                 Powered by Google Gemini • Patient: {patientData?.patientName}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 lg:gap-3 w-full sm:w-auto justify-end mt-1 sm:mt-0">
             {analysis && (
               <button
                 onClick={handleSaveReport}
                 disabled={savingReport || savedReport}
-                className={`px-3 py-1.5 rounded-xl border text-xs font-black uppercase tracking-widest transition-all flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-xl border text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all flex items-center gap-1.5 ${
                   savedReport
                     ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                     : 'bg-violet-600 hover:bg-violet-750 text-white border-violet-500 hover:scale-95'
@@ -189,19 +212,19 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
               </button>
             )}
             {analysis && (
-              <div className={`px-3 py-1.5 rounded-xl border text-xs font-black uppercase tracking-widest ${severityColor[analysis.overallRiskLevel] || severityColor.Medium}`}>
+              <div className={`px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border text-[10px] sm:text-xs font-black uppercase tracking-widest ${severityColor[analysis.overallRiskLevel] || severityColor.Medium}`}>
                 {analysis.overallRiskLevel} Risk
               </div>
             )}
             <button onClick={onClose}
-              className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50 hover:border-slate-600 transition-all">
+              className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-xl bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50 hover:border-slate-600 transition-all">
               <FaTimes />
             </button>
           </div>
         </div>
 
         {/* Patient Summary Bar */}
-        <div className="flex items-center gap-6 px-6 py-3 border-b border-slate-800/30 bg-slate-900/30 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-4 lg:gap-6 px-3 lg:px-6 py-2 border-b border-slate-800/30 bg-slate-900/30 overflow-x-auto whitespace-nowrap custom-scrollbar">
           {[
             { label: 'Age', value: `${patientData?.age} yrs` },
             { label: 'Weight', value: `${patientData?.weight} kg` },
@@ -211,18 +234,18 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
             { label: 'Fluid Loss', value: `${surgeryData?.totalFluidLoss || 0} ml`, color: 'text-blue-400' },
             { label: 'Duration', value: `${surgeryData?.surgeryDuration || 0} hrs`, color: 'text-amber-400' },
           ].map((item, i) => (
-            <div key={i} className="flex flex-col">
-              <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">{item.label}</span>
-              <span className={`text-xs font-bold ${item.color || 'text-white'}`}>{item.value}</span>
+            <div key={i} className="flex flex-col flex-shrink-0">
+              <span className="text-[8px] sm:text-[9px] text-slate-500 font-black uppercase tracking-widest">{item.label}</span>
+              <span className={`text-[10px] sm:text-xs font-bold ${item.color || 'text-white'}`}>{item.value}</span>
             </div>
           ))}
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
 
           {/* Left Panel — Analysis */}
-          <div className="w-[55%] border-r border-slate-800/50 flex flex-col overflow-hidden">
+          <div className="w-full h-[40%] lg:h-auto lg:w-[55%] border-b lg:border-b-0 lg:border-r border-slate-800/50 flex flex-col overflow-hidden shrink-0">
             {phase === 'loading' ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-6">
                 <div className="relative">
@@ -420,20 +443,20 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
           {/* Right Panel — Chat */}
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Chat Header */}
-            <div className="px-4 py-3 border-b border-slate-800/30">
-              <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Medical Q&A</p>
-              <p className="text-white font-bold text-sm mt-0.5">Ask follow-up medical questions</p>
+            <div className="px-3 sm:px-4 py-2 border-b border-slate-800/30">
+              <p className="text-[9px] sm:text-[10px] text-slate-500 font-black uppercase tracking-widest hidden sm:block">Medical Q&A</p>
+              <p className="text-white font-bold text-xs sm:text-sm mt-0.5 sm:mt-0">Ask follow-up medical questions</p>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 custom-scrollbar">
               {messages.length === 0 && (
-                <div className="space-y-3">
-                  <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest text-center mb-4">Suggested Questions</p>
+                <div className="space-y-2 sm:space-y-3">
+                  <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest text-center mb-2 sm:mb-4">Suggested Questions</p>
                   {suggestedQuestions.map((q, i) => (
                     <button key={i} onClick={() => setQuestion(q)}
-                      className="w-full text-left p-3 rounded-2xl bg-slate-800/30 border border-slate-800/50 hover:border-violet-500/30 hover:bg-violet-500/5 transition-all group">
-                      <p className="text-slate-400 text-xs group-hover:text-violet-300 transition-colors leading-relaxed">{q}</p>
+                      className="w-full text-left p-2.5 sm:p-3 rounded-2xl bg-slate-800/30 border border-slate-800/50 hover:border-violet-500/30 hover:bg-violet-500/5 transition-all group">
+                      <p className="text-slate-400 text-[11px] sm:text-xs group-hover:text-violet-300 transition-colors leading-relaxed">{q}</p>
                     </button>
                   ))}
                 </div>
@@ -443,23 +466,23 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
                 <motion.div key={i}
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] ${msg.role === 'user'
-                    ? 'bg-violet-600 text-white rounded-3xl rounded-tr-lg px-4 py-3'
-                    : 'bg-slate-800/60 border border-slate-700/50 text-slate-200 rounded-3xl rounded-tl-lg px-4 py-3'}`}>
+                  <div className={`max-w-[90%] sm:max-w-[85%] ${msg.role === 'user'
+                    ? 'bg-violet-600 text-white rounded-2xl sm:rounded-3xl rounded-tr-lg px-3 py-2 sm:px-4 sm:py-3'
+                    : 'bg-slate-800/60 border border-slate-700/50 text-slate-200 rounded-2xl sm:rounded-3xl rounded-tl-lg px-3 py-2 sm:px-4 sm:py-3'}`}>
                     {msg.role === 'ai' && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <FaBrain className="text-violet-400 text-xs" />
-                        <span className="text-[9px] text-violet-400 font-black uppercase tracking-widest">AI Assistant</span>
+                      <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                        <FaBrain className="text-violet-400 text-[10px] sm:text-xs" />
+                        <span className="text-[8px] sm:text-[9px] text-violet-400 font-black uppercase tracking-widest">AI Assistant</span>
                       </div>
                     )}
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                   </div>
                 </motion.div>
               ))}
 
               {sending && (
                 <div className="flex justify-start">
-                  <div className="bg-slate-800/60 border border-slate-700/50 rounded-3xl rounded-tl-lg px-4 py-3">
+                  <div className="bg-slate-800/60 border border-slate-700/50 rounded-2xl sm:rounded-3xl rounded-tl-lg px-3 py-2 sm:px-4 sm:py-3">
                     <div className="flex items-center gap-2">
                       <FaSpinner className="text-violet-400 animate-spin text-xs" />
                       <span className="text-slate-400 text-xs">AI is thinking...</span>
@@ -471,16 +494,16 @@ export default function AIChatbot({ patientData, surgeryData, onClose, onSaveAna
             </div>
 
             {/* Input */}
-            <div className="p-4 border-t border-slate-800/50">
-              <div className="flex gap-3 items-end">
+            <div className="p-2 sm:p-4 border-t border-slate-800/50">
+              <div className="flex gap-2 sm:gap-3 items-end">
                 <textarea
                   ref={inputRef}
                   value={question}
                   onChange={e => setQuestion(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask a medical question... (Enter to send)"
-                  rows={2}
-                  className="flex-1 resize-none rounded-2xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 text-sm px-4 py-3 focus:outline-none focus:border-violet-500/50 transition-all"
+                  rows={1}
+                  className="flex-1 resize-none rounded-xl sm:rounded-2xl bg-slate-800/50 border border-slate-700/50 text-white placeholder-slate-500 text-[11px] sm:text-sm px-3 py-2 sm:px-4 sm:py-3 focus:outline-none focus:border-violet-500/50 transition-all custom-scrollbar"
                 />
                 <button
                   onClick={sendQuestion}

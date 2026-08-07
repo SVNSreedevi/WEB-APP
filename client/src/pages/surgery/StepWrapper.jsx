@@ -10,7 +10,7 @@ export default function StepWrapper({ currentStep, children }) {
     <div className="max-w-3xl mx-auto space-y-8">
       {/* Progress bar */}
       <div className="card !p-6 bg-dark-card/50">
-        <div className="flex items-center justify-between px-2">
+        <div className="flex items-center justify-between px-2 overflow-x-auto custom-scrollbar pb-2 min-w-full">
           {STEPS.map((s, i) => {
             const stepNum = i + 1;
             const isDone  = stepNum < currentStep;
@@ -30,7 +30,7 @@ export default function StepWrapper({ currentStep, children }) {
                   </span>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="flex-1 px-4">
+                  <div className="flex-1 px-2 md:px-4 min-w-[20px] md:min-w-[40px]">
                     <div className={`h-[2px] rounded-full transition-all duration-700 ${isDone ? (role === 'doctor' ? 'bg-primary-500 shadow-blue-glow' : 'bg-emerald-500 shadow-emerald-glow') : 'bg-slate-800'}`} />
                   </div>
                 )}

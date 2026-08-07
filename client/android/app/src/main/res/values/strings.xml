@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FluidMonitor</string>
+    <string name="title_activity_main">FluidMonitor</string>
+    <string name="package_name">com.fluidmonitor.app</string>
+    <string name="custom_url_scheme">com.fluidmonitor.app</string>
+</resources>

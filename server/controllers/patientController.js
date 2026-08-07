@@ -60,13 +60,19 @@ exports.getPatient = async (req, res) => {
   }
 };
 
+const { predictRiskLevel } = require('../utils/aiHelper');
+
 // POST create patient
 exports.createPatient = async (req, res) => {
   try {
+    const aiResult = await predictRiskLevel(req.body);
+
     const data = {
       ...req.body,
       createdBy: req.userId,
       createdByRole: req.userRole,
+      riskLevel: aiResult.riskLevel,
+      confidence: aiResult.confidence
     };
     const patient = await Patient.create(data);
 
@@ -148,6 +154,12 @@ exports.updatePatient = async (req, res) => {
         updates.editLog = [logEntry];
       }
     }
+
+    // Call AI helper for updated data
+    const combinedData = { ...oldPatient.toObject(), ...req.body };
+    const aiResult = await predictRiskLevel(combinedData);
+    updates.riskLevel = aiResult.riskLevel;
+    updates.confidence = aiResult.confidence;
 
     const patient = await Patient.findByIdAndUpdate(req.params.id, updates, { new: true });
 

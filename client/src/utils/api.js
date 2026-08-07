@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+import { Capacitor } from '@capacitor/core';
+
+const getBaseUrl = () => {
+  if (Capacitor.isNativePlatform()) {
+    // If using a physical device on the same Wi-Fi network, use the computer's IP address
+    return 'http://192.168.137.1:5000/api';
+    
+    // Alternatively, if using the Android Emulator, use:
+    // return 'http://10.0.2.2:5000/api';
+    
+    // Alternatively, if using your localtunnel, use:
+    // return 'https://ripe-games-shake.loca.lt/api';
+  }
+  return 'http://127.0.0.1:5000/api';
+};
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: getBaseUrl(),
   headers: { 'Content-Type': 'application/json' },
 });
 

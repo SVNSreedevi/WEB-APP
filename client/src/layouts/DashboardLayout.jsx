@@ -120,7 +120,7 @@ export default function DashboardLayout({ role }) {
   );
 
   return (
-    <div className="min-h-screen bg-dark-bg flex text-slate-300">
+    <div className="min-h-screen bg-dark-bg flex text-slate-300 w-full overflow-x-hidden">
       {/* Desktop Sidebar */}
       <aside className={`hidden lg:flex flex-col fixed top-0 left-0 h-screen bg-[#0b0f1a] border-r border-slate-800/50 z-30 transition-all duration-300 ${collapsed ? 'w-20' : 'w-64'}`}>
         <SidebarContent />
@@ -154,7 +154,7 @@ export default function DashboardLayout({ role }) {
       </AnimatePresence>
 
       {/* Main content area */}
-      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
+      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 w-full overflow-x-hidden ${collapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
         {/* Top navbar */}
         <header className="sticky top-0 z-20 bg-dark-bg/80 backdrop-blur-md border-b border-slate-800/50 px-4 md:px-8 py-4 flex items-center gap-4">
           <button

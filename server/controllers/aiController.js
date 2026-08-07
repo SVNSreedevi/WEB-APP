@@ -91,13 +91,12 @@ exports.analyzePatient = async (req, res) => {
           suggestions = 'Crystalloid Fluid replacement, Blood Pressure Monitoring, Heart Rate Monitoring.';
         }
 
-        return `### Blood Loss Analysis (${queryBloodLoss} ml)
-- **Risk & Severity**: ${severity} (${classHemorrhage}). This represents approximately ${pct}% of the patient's estimated blood volume (${estimatedBloodVolume.toFixed(0)} ml).
-- **Clinical Severity**: ${severity}.
-- **Immediate Precautions**: ${precautions}
-- **Treatment**: ${treatment}
-- **Monitoring**: ${monitoring}
-- **Smart AI Suggestions**: ${suggestions}`;
+        return `Blood Loss Analysis for ${queryBloodLoss} ml:
+The risk and severity is ${severity} (${classHemorrhage}). This represents approximately ${pct}% of the patient's estimated blood volume (${estimatedBloodVolume.toFixed(0)} ml). The clinical severity is ${severity}.
+Immediate Precautions: ${precautions}
+Treatment: ${treatment}
+Monitoring: ${monitoring}
+Smart AI Suggestions: ${suggestions}`;
       }
 
       // 2. Dynamic Fluid Loss Analysis
@@ -128,138 +127,138 @@ exports.analyzePatient = async (req, res) => {
           medicalGuidance = 'Perform clinical assessment of fluid volume status (e.g. capillary refill time).';
         }
 
-        return `### Fluid Loss Analysis (${queryFluidLoss} ml)
-- **Risks**: ${risks}
-- **Treatment**: ${treatment}
-- **Monitoring**: ${monitoring}
-- **Fluid Replacement Advice**: ${replacementAdvice}
-- **Medical Guidance**: ${medicalGuidance}`;
+        return `Fluid Loss Analysis for ${queryFluidLoss} ml:
+Risks: ${risks}
+Treatment: ${treatment}
+Monitoring: ${monitoring}
+Fluid Replacement Advice: ${replacementAdvice}
+Medical Guidance: ${medicalGuidance}`;
       }
 
       if (qLower.includes('iv fluid') || qLower.includes('which iv') || qLower.includes('fluid should be used')) {
-        return `### IV Fluid Replacement Guide
-- **Crystalloids**: Lactated Ringer's (LR) or Normal Saline (0.9% NaCl) are the first-line choice for intravascular volume replacement. LR is preferred in large volumes to avoid hyperchloremic acidosis.
-- **Colloids**: 5% Albumin can be considered when there is significant hypoalbuminemia or when volume expansion cannot be achieved with crystalloids alone.
-- **Maintenance**: D5 1/2 NS with 20 mEq/L KCl once intravascular volume is fully restored.
-- **Smart AI Suggestions**: Crystalloid Fluid, Colloid Fluid, Electrolyte Replacement.`;
+        return `IV Fluid Replacement Guide:
+Crystalloids: Lactated Ringer's (LR) or Normal Saline (0.9% NaCl) are the first-line choice for intravascular volume replacement. LR is preferred in large volumes to avoid hyperchloremic acidosis.
+Colloids: 5% Albumin can be considered when there is significant hypoalbuminemia or when volume expansion cannot be achieved with crystalloids alone.
+Maintenance: D5 1/2 NS with 20 mEq/L KCl once intravascular volume is fully restored.
+Smart AI Suggestions: Crystalloid Fluid, Colloid Fluid, Electrolyte Replacement.`;
       }
 
       if (qLower.includes('dehydration') || qLower.includes('dehydrated')) {
-        return `### Dehydration & Volume Depletion Assessment
-- **Risks**: Severe dehydration can impair tissue perfusion, lead to acute kidney injury (AKI), and cause severe cardiac dysrhythmias due to electrolyte concentration changes.
-- **Symptoms**: Dry mucous membranes, oliguria, tachycardia, delayed capillary refill, and hypotension.
-- **Causes**: High intraoperative blood loss, prolonged surgery duration leading to high insensible loss, or inadequate IV replacement.
-- **Diagnosis**: Elevated BUN/Creatinine ratio, high urine specific gravity, and metabolic acidosis on ABG.
-- **Treatment**: Isotonic crystalloid fluids (Normal Saline or LR) at 100-150 ml/hr, adjusted based on hemodynamic response and urine output.
-- **Monitoring**: Vital signs every 15 minutes, hourly urine output, and daily weights.
-- **Follow-up**: Assess renal function daily.`;
+        return `Dehydration and Volume Depletion Assessment:
+Risks: Severe dehydration can impair tissue perfusion, lead to acute kidney injury (AKI), and cause severe cardiac dysrhythmias due to electrolyte concentration changes.
+Symptoms: Dry mucous membranes, oliguria, tachycardia, delayed capillary refill, and hypotension.
+Causes: High intraoperative blood loss, prolonged surgery duration leading to high insensible loss, or inadequate IV replacement.
+Diagnosis: Elevated BUN/Creatinine ratio, high urine specific gravity, and metabolic acidosis on ABG.
+Treatment: Isotonic crystalloid fluids (Normal Saline or LR) at 100-150 ml/hr, adjusted based on hemodynamic response and urine output.
+Monitoring: Vital signs every 15 minutes, hourly urine output, and daily weights.
+Follow-up: Assess renal function daily.`;
       }
 
       // Disease & Pathology Explanations
       if (qLower.includes('hypovolemia') || qLower.includes('hypovolemic')) {
-        return `### Hypovolemia Medical Dossier
-- **Symptoms**: Hypotension, tachycardia, cold/clammy extremities, rapid/shallow breathing, decreased urine output (<0.5 ml/kg/hr), confusion.
-- **Causes**: Hemorrhage, excessive gastrointestinal loss, third-spacing, severe insensible losses during major abdominal surgeries.
-- **Diagnosis**: Low central venous pressure, high heart rate, low systolic and pulse pressure, elevated blood lactate, and ultrasound showing collapsible inferior vena cava (IVC).
-- **Precautions**: Avoid sudden position changes. Stop any vasodilating agents. Ensure airway patency.
-- **Treatment**: Immediate volume expansion using isotonic crystalloids (LR or NS). If blood loss is the primary cause, initiate PRBC transfusion.
-- **Medication Information**: Administer vasopressors (e.g., Norepinephrine) only after adequate fluid resuscitation to avoid critical organ ischemia.
-- **Follow-up**: Weekly clinical checks, serial CBC, and basic metabolic panels (BMP) to track renal recovery.
-- **ICU Requirement**: Highly recommended if mechanical ventilation is needed, or if vasopressor support is required to maintain MAP > 65 mmHg.
-- **Recovery Process**: Gradual mobilization as hemodynamics stabilize. Oral hydration as tolerated.
-- **Monitoring**: Arterial line blood pressure, pulse oximetry, ECG, urine output.
-- **Emergency Management**: Elevate legs (passive leg raise), open IV lines wide, prepare emergency type O-negative blood.`;
+        return `Hypovolemia Medical Dossier:
+Symptoms: Hypotension, tachycardia, cold/clammy extremities, rapid/shallow breathing, decreased urine output (<0.5 ml/kg/hr), confusion.
+Causes: Hemorrhage, excessive gastrointestinal loss, third-spacing, severe insensible losses during major abdominal surgeries.
+Diagnosis: Low central venous pressure, high heart rate, low systolic and pulse pressure, elevated blood lactate, and ultrasound showing collapsible inferior vena cava (IVC).
+Precautions: Avoid sudden position changes. Stop any vasodilating agents. Ensure airway patency.
+Treatment: Immediate volume expansion using isotonic crystalloids (LR or NS). If blood loss is the primary cause, initiate PRBC transfusion.
+Medication Information: Administer vasopressors (e.g., Norepinephrine) only after adequate fluid resuscitation to avoid critical organ ischemia.
+Follow-up: Weekly clinical checks, serial CBC, and basic metabolic panels (BMP) to track renal recovery.
+ICU Requirement: Highly recommended if mechanical ventilation is needed, or if vasopressor support is required to maintain MAP > 65 mmHg.
+Recovery Process: Gradual mobilization as hemodynamics stabilize. Oral hydration as tolerated.
+Monitoring: Arterial line blood pressure, pulse oximetry, ECG, urine output.
+Emergency Management: Elevate legs (passive leg raise), open IV lines wide, prepare emergency type O-negative blood.`;
       }
 
       if (qLower.includes('septic shock') || qLower.includes('sepsis')) {
-        return `### Septic Shock Clinical Summary
-- **Symptoms**: Hyperthermia or hypothermia, profound hypotension (refractory to fluid resuscitation), tachycardia, tachypnea, altered mental state, warm/flushed skin initially.
-- **Causes**: Systemic inflammatory response triggered by severe bacterial, viral, or fungal infection.
-- **Diagnosis**: Persistent hypotension requiring vasopressors to maintain MAP ≥ 65 mmHg and serum lactate > 2 mmol/L despite adequate fluid resuscitation.
-- **Precautions**: Strict aseptic technique. Prompt surgical source control of infection.
-- **Treatment**: Early administration of broad-spectrum IV antibiotics (within 1 hour), crystalloid fluid challenge (30 ml/kg), and vasopressor administration.
-- **Medication Information**: Norepinephrine is the first-choice vasopressor. Add Vasopressin if necessary. Broad-spectrum antibiotics (e.g., Piperacillin/Tazobactam or Meropenem).
-- **Follow-up**: Daily infectious disease review, repeat cultures, and inflammatory markers (CRP, Procalcitonin).
-- **ICU Requirement**: Mandatory. Patients require close invasive monitoring and titration of vasoactive drugs.
-- **Recovery Process**: Slow, multi-disciplinary rehabilitation. Assessment for post-sepsis syndrome.
-- **Monitoring**: Continuous arterial line, CVP, blood cultures, lactate levels.
-- **Emergency Management**: Secure airway, rapid fluid infusion, emergency vasopressors.`;
+        return `Septic Shock Clinical Summary:
+Symptoms: Hyperthermia or hypothermia, profound hypotension (refractory to fluid resuscitation), tachycardia, tachypnea, altered mental state, warm/flushed skin initially.
+Causes: Systemic inflammatory response triggered by severe bacterial, viral, or fungal infection.
+Diagnosis: Persistent hypotension requiring vasopressors to maintain MAP >= 65 mmHg and serum lactate > 2 mmol/L despite adequate fluid resuscitation.
+Precautions: Strict aseptic technique. Prompt surgical source control of infection.
+Treatment: Early administration of broad-spectrum IV antibiotics (within 1 hour), crystalloid fluid challenge (30 ml/kg), and vasopressor administration.
+Medication Information: Norepinephrine is the first-choice vasopressor. Add Vasopressin if necessary. Broad-spectrum antibiotics (e.g., Piperacillin/Tazobactam or Meropenem).
+Follow-up: Daily infectious disease review, repeat cultures, and inflammatory markers (CRP, Procalcitonin).
+ICU Requirement: Mandatory. Patients require close invasive monitoring and titration of vasoactive drugs.
+Recovery Process: Slow, multi-disciplinary rehabilitation. Assessment for post-sepsis syndrome.
+Monitoring: Continuous arterial line, CVP, blood cultures, lactate levels.
+Emergency Management: Secure airway, rapid fluid infusion, emergency vasopressors.`;
       }
 
       if (qLower.includes('fluid imbalance') || qLower.includes('electrolyte imbalance')) {
-        return `### Fluid & Electrolyte Imbalance Protocol
-- **Symptoms**: Muscle weakness, cardiac arrhythmias, seizures, hyperreflexia, paresthesias, confusion, or edema.
-- **Causes**: Excessive crystalloid administration, SIADH, acute kidney injury, high gastric/bowel losses, or inadequate replacement.
-- **Diagnosis**: Serum electrolyte panel showing deviations in Sodium (Na+), Potassium (K+), Calcium (Ca2+), or Magnesium (Mg2+).
-- **Precautions**: Correct imbalances slowly—especially sodium (risk of osmotic demyelination syndrome if corrected too fast).
-- **Treatment**: Tailored replacement therapy. IV potassium infusion (max 10-20 mEq/hr via central line). Hypertonic saline (3%) for symptomatic hyponatremia.
-- **Medication Information**: Potassium chloride, Magnesium sulfate, Calcium gluconate, or loop diuretics (e.g., Furosemide) for hypervolemia.
-- **Follow-up**: Repeat electrolyte panels every 2-6 hours depending on severity.
-- **ICU Requirement**: Recommended for severe hyperkalemia (>6.5 mEq/L) or severe symptomatic hyponatremia (<120 mEq/L).
-- **Recovery Process**: Dietary correction, monitoring renal function, and fluid intake restrictions if dilutional hyponatremia is present.
-- **Monitoring**: Continuous ECG (particularly for potassium abnormalities), serum chemistry, and neurological checks.
-- **Emergency Management**: Calcium chloride/gluconate for cardiac protection in severe hyperkalemia, followed by insulin/dextrose and sodium bicarbonate.`;
+        return `Fluid & Electrolyte Imbalance Protocol:
+Symptoms: Muscle weakness, cardiac arrhythmias, seizures, hyperreflexia, paresthesias, confusion, or edema.
+Causes: Excessive crystalloid administration, SIADH, acute kidney injury, high gastric/bowel losses, or inadequate replacement.
+Diagnosis: Serum electrolyte panel showing deviations in Sodium (Na+), Potassium (K+), Calcium (Ca2+), or Magnesium (Mg2+).
+Precautions: Correct imbalances slowly - especially sodium (risk of osmotic demyelination syndrome if corrected too fast).
+Treatment: Tailored replacement therapy. IV potassium infusion (max 10-20 mEq/hr via central line). Hypertonic saline (3%) for symptomatic hyponatremia.
+Medication Information: Potassium chloride, Magnesium sulfate, Calcium gluconate, or loop diuretics (e.g., Furosemide) for hypervolemia.
+Follow-up: Repeat electrolyte panels every 2-6 hours depending on severity.
+ICU Requirement: Recommended for severe hyperkalemia (>6.5 mEq/L) or severe symptomatic hyponatremia (<120 mEq/L).
+Recovery Process: Dietary correction, monitoring renal function, and fluid intake restrictions if dilutional hyponatremia is present.
+Monitoring: Continuous ECG (particularly for potassium abnormalities), serum chemistry, and neurological checks.
+Emergency Management: Calcium chloride/gluconate for cardiac protection in severe hyperkalemia, followed by insulin/dextrose and sodium bicarbonate.`;
       }
 
       if (qLower.includes('renal failure') || qLower.includes('kidney failure') || qLower.includes('renal insufficiency')) {
-        return `### Acute Renal Failure / Kidney Injury (AKI)
-- **Symptoms**: Oliguria or anuria, peripheral edema, shortness of breath, fatigue, nausea, and confusion.
-- **Causes**: Prerenal (hypovolemia, hypotension, hemorrhage during surgery), intrinsic (acute tubular necrosis, nephrotoxic drugs), postrenal (obstruction).
-- **Diagnosis**: Sudden rise in serum Creatinine (≥ 0.3 mg/dl within 48 hours or ≥ 1.5-fold baseline) and decreased urine output.
-- **Precautions**: Avoid nephrotoxic agents (NSAIDs, aminoglycosides, IV contrast). Adjust medication dosages for renal clearance.
-- **Treatment**: Optimize hemodynamic status with IV fluids to restore renal perfusion. Discontinue causative drugs. Manage potassium and fluid overload.
-- **Medication Information**: Diuretics (Furosemide) only if volume overloaded; avoid in hypovolemia. Phosphate binders if hyperphosphatemic.
-- **Follow-up**: Daily BUN/Creatinine, serum electrolytes, and fluid balance audits.
-- **ICU Requirement**: Required if renal replacement therapy (dialysis) or continuous venovenous hemofiltration (CVVH) is indicated due to refractory fluid overload, hyperkalemia, or uremia.
-- **Recovery Process**: Kidney function may recover fully over weeks if hypovolemia is corrected early.
-- **Monitoring**: Hourly urine output, daily weight, serum electrolytes.
-- **Emergency Management**: Urgent hemodialysis for refractory hyperkalemia, metabolic acidosis, or severe uremic encephalopathy.`;
+        return `Acute Renal Failure / Kidney Injury (AKI):
+Symptoms: Oliguria or anuria, peripheral edema, shortness of breath, fatigue, nausea, and confusion.
+Causes: Prerenal (hypovolemia, hypotension, hemorrhage during surgery), intrinsic (acute tubular necrosis, nephrotoxic drugs), postrenal (obstruction).
+Diagnosis: Sudden rise in serum Creatinine (>= 0.3 mg/dl within 48 hours or >= 1.5-fold baseline) and decreased urine output.
+Precautions: Avoid nephrotoxic agents (NSAIDs, aminoglycosides, IV contrast). Adjust medication dosages for renal clearance.
+Treatment: Optimize hemodynamic status with IV fluids to restore renal perfusion. Discontinue causative drugs. Manage potassium and fluid overload.
+Medication Information: Diuretics (Furosemide) only if volume overloaded; avoid in hypovolemia. Phosphate binders if hyperphosphatemic.
+Follow-up: Daily BUN/Creatinine, serum electrolytes, and fluid balance audits.
+ICU Requirement: Required if renal replacement therapy (dialysis) or continuous venovenous hemofiltration (CVVH) is indicated due to refractory fluid overload, hyperkalemia, or uremia.
+Recovery Process: Kidney function may recover fully over weeks if hypovolemia is corrected early.
+Monitoring: Hourly urine output, daily weight, serum electrolytes.
+Emergency Management: Urgent hemodialysis for refractory hyperkalemia, metabolic acidosis, or severe uremic encephalopathy.`;
       }
 
       if (qLower.includes('respiratory failure') || qLower.includes('respiratory arrest')) {
-        return `### Acute Respiratory Failure
-- **Symptoms**: Severe dyspnea, tachypnea (>30 bpm), cyanosis, accessory muscle use, altered mental status, and diaphoresis.
-- **Causes**: ARDS, fluid overload (pulmonary edema), atelectasis, aspiration, or residual neuromuscular blockade post-anesthesia.
-- **Diagnosis**: Arterial Blood Gas (ABG) showing PaO2 < 60 mmHg (hypoxemic) or PaCO2 > 50 mmHg with pH < 7.35 (hypercapnic).
-- **Precautions**: Maintain semi-Fowler's position. Avoid over-sedation.
-- **Treatment**: Oxygen therapy (nasal cannula, high-flow nasal therapy, non-invasive ventilation, or endotracheal intubation). Diurese if pulmonary edema is present.
-- **Medication Information**: Bronchodilators (Albuterol), corticosteroids (Methylprednisolone), diuretics (Furosemide), and antibiotics for underlying pneumonia.
-- **Follow-up**: Serial chest X-rays, daily ABG checks, pulmonology review.
-- **ICU Requirement**: Yes, standard requirement for invasive mechanical ventilation or high-flow oxygen requirements.
-- **Recovery Process**: Pulmonary toilet, chest physiotherapy, and gradual ventilator weaning protocols.
-- **Monitoring**: Continuous pulse oximetry, respiratory rate, capnography, and arterial line for serial blood gases.
-- **Emergency Management**: Intubation and bag-valve-mask ventilation if airway protective reflexes are lost or in case of respiratory arrest.`;
+        return `Acute Respiratory Failure:
+Symptoms: Severe dyspnea, tachypnea (>30 bpm), cyanosis, accessory muscle use, altered mental status, and diaphoresis.
+Causes: ARDS, fluid overload (pulmonary edema), atelectasis, aspiration, or residual neuromuscular blockade post-anesthesia.
+Diagnosis: Arterial Blood Gas (ABG) showing PaO2 < 60 mmHg (hypoxemic) or PaCO2 > 50 mmHg with pH < 7.35 (hypercapnic).
+Precautions: Maintain semi-Fowler's position. Avoid over-sedation.
+Treatment: Oxygen therapy (nasal cannula, high-flow nasal therapy, non-invasive ventilation, or endotracheal intubation). Diurese if pulmonary edema is present.
+Medication Information: Bronchodilators (Albuterol), corticosteroids (Methylprednisolone), diuretics (Furosemide), and antibiotics for underlying pneumonia.
+Follow-up: Serial chest X-rays, daily ABG checks, pulmonology review.
+ICU Requirement: Yes, standard requirement for invasive mechanical ventilation or high-flow oxygen requirements.
+Recovery Process: Pulmonary toilet, chest physiotherapy, and gradual ventilator weaning protocols.
+Monitoring: Continuous pulse oximetry, respiratory rate, capnography, and arterial line for serial blood gases.
+Emergency Management: Intubation and bag-valve-mask ventilation if airway protective reflexes are lost or in case of respiratory arrest.`;
       }
 
       if (qLower.includes('postoperative care') || qLower.includes('post-op')) {
-        return `### Postoperative Care Guidelines
-- **Symptoms/Assessment**: Pain, nausea, urine retention, bleeding at surgical site, hypothermia.
-- **Precautions**: Early mobilization to prevent DVT. Sterile dressing changes. Assess bowel sounds before introducing oral feeds.
-- **Treatment**: Pain control (multimodal analgesia), IV maintenance fluids, deep breathing/spirometry exercises.
-- **Medication Information**: Analgesics (Acetaminophen, NSAIDs, weak opioids if needed), antiemetics (Ondansetron), DVT prophylaxis (Enoxaparin or heparin).
-- **Follow-up**: Surgical wound check daily. Suture removal in 7-10 days.
-- **ICU Requirement**: Generally not needed unless the surgery was high-risk, prolonged, or the patient has severe cardiopulmonary comorbidities.
-- **Recovery Process**: Transition from liquid to solid diet. Gradual step-up in physical activity.
-- **Monitoring**: Standard vital signs (BP, HR, Temp, RR) every 4 hours, wound drain output, and fluid intake/output balance.
-- **Emergency Management**: Urgent surgical re-exploration for active hemorrhage or emergency airway control for laryngospasm.`;
+        return `Postoperative Care Guidelines:
+Symptoms/Assessment: Pain, nausea, urine retention, bleeding at surgical site, hypothermia.
+Precautions: Early mobilization to prevent DVT. Sterile dressing changes. Assess bowel sounds before introducing oral feeds.
+Treatment: Pain control (multimodal analgesia), IV maintenance fluids, deep breathing/spirometry exercises.
+Medication Information: Analgesics (Acetaminophen, NSAIDs, weak opioids if needed), antiemetics (Ondansetron), DVT prophylaxis (Enoxaparin or heparin).
+Follow-up: Surgical wound check daily. Suture removal in 7-10 days.
+ICU Requirement: Generally not needed unless the surgery was high-risk, prolonged, or the patient has severe cardiopulmonary comorbidities.
+Recovery Process: Transition from liquid to solid diet. Gradual step-up in physical activity.
+Monitoring: Standard vital signs (BP, HR, Temp, RR) every 4 hours, wound drain output, and fluid intake/output balance.
+Emergency Management: Urgent surgical re-exploration for active hemorrhage or emergency airway control for laryngospasm.`;
       }
 
       // Default medically relevant answer fallback using current patient metrics
-      return `### Clinical Consultation: "${question}"
-Based on the intraoperative parameters for **${patientData.patientName}** (Age: ${patientData.age}, Weight: ${patientData.weight}kg):
-- **Blood Loss**: ${totalBloodLoss} ml (${pctBloodLoss}% of Estimated Blood Volume).
-- **Fluid Loss**: ${totalFluidLoss} ml.
-- **Surgical Risk**: The patient underwent a ${patientData.surgeryType || 'procedure'} lasting ${surgeryData.surgeryDuration || 0} hours.
+      return `Clinical Consultation: "${question}"
+Based on the intraoperative parameters for ${patientData.patientName} (Age: ${patientData.age}, Weight: ${patientData.weight}kg):
+Blood Loss: ${totalBloodLoss} ml (${pctBloodLoss}% of Estimated Blood Volume).
+Fluid Loss: ${totalFluidLoss} ml.
+Surgical Risk: The patient underwent a ${patientData.surgeryType || 'procedure'} lasting ${surgeryData.surgeryDuration || 0} hours.
 
-**Smart AI Response**:
+Smart AI Response:
 For this specific patient, standard medical protocols advise close tracking of vital signs and volume replacement matching the recorded ${totalFluidLoss} ml of fluid loss. 
 Regarding your specific query, ensure that prophylactic antibiotics, adequate analgesia, and DVT prophylaxis are considered based on standard ${patientData.surgeryType || 'surgical'} guidelines. If prescribing tablets or medications, please account for the patient's age (${patientData.age}) and weight (${patientData.weight}kg) for proper dosage calculation.
 
-**General Suggestions**:
-- **Volume Resuscitation**: ${totalBloodLoss > 1000 ? 'Prepare for Blood Transfusion. Administer crystalloid and colloid solutions.' : 'Ensure adequate crystalloid replacement (Normal Saline or Lactated Ringer\'s).'}
-- **Laboratory Investigation**: CBC test, Hemoglobin test, and serum electrolytes are recommended immediately post-op.
-- **Monitoring**: Close tracking of vital signs (Blood Pressure, Heart Rate, Oxygen Saturation) and Foley catheter Urine Output.
-- **ICU Care**: ${totalBloodLoss > 1500 ? 'Initiate ICU Observation due to significant hemorrhage.' : 'Standard post-anesthesia care unit (PACU) monitoring is sufficient.'}`;
+General Suggestions:
+Volume Resuscitation: ${totalBloodLoss > 1000 ? 'Prepare for Blood Transfusion. Administer crystalloid and colloid solutions.' : 'Ensure adequate crystalloid replacement (Normal Saline or Lactated Ringer\'s).'}
+Laboratory Investigation: CBC test, Hemoglobin test, and serum electrolytes are recommended immediately post-op.
+Monitoring: Close tracking of vital signs (Blood Pressure, Heart Rate, Oxygen Saturation) and Foley catheter Urine Output.
+ICU Care: ${totalBloodLoss > 1500 ? 'Initiate ICU Observation due to significant hemorrhage.' : 'Standard post-anesthesia care unit (PACU) monitoring is sufficient.'}`;
     };
 
     // Helper function to return the full JSON analysis fallback
@@ -324,7 +323,7 @@ Regarding your specific query, ensure that prophylactic antibiotics, adequate an
 
     try {
       // Live AI connection attempt
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
       let prompt;
 
       if (question) {
@@ -338,6 +337,7 @@ Patient Context:
 - Surgery Type: ${patientData.surgeryType}
 - Allergies: ${patientData.allergies || 'None'}
 - Medical History: ${patientData.medicalNotes || 'None'}
+- ML Risk Prediction: ${patientData.riskLevel || 'Unknown'} (Confidence: ${(patientData.confidence || 0) * 100}%)
 
 Surgery Measurements:
 - Small Gauze Blood Loss: ${surgeryData.smallGauzeBlood || 0} ml
@@ -353,13 +353,15 @@ Surgery Measurements:
 Doctor's Question: ${question}
 
 Instructions for your response:
-1. If the question is about blood loss estimation (e.g. "I lost approximately 900 ml blood", "1500 ml blood loss", etc.), explicitly explain the associated Risk, Severity (Mild, Moderate, Severe), Precautions, Treatment, and Monitoring.
-2. If the question is about fluid loss estimation (e.g. "Fluid loss 3000 ml", "What IV fluid should be used", "Is dehydration possible"), explicitly explain the Risks, Treatment, Monitoring, Fluid Replacement options, and general Medical Guidance.
-3. For general medical questions (e.g., Hypovolemia, Septic Shock, Fluid Imbalance, Hemorrhage, Electrolyte Imbalance, Postoperative Care, Renal/Respiratory Failure), explain the Symptoms, Causes, Diagnosis, Precautions, Treatment, Medication Information, Follow-up, ICU Requirement, Recovery Process, Monitoring, and Emergency Management where relevant.
-4. Ensure your suggestions are smart and tailored, automatically suggesting actions like Blood Transfusion, Crystalloid/Colloid Fluid, Electrolyte Replacement, ICU Observation, CBC/Hemoglobin tests, or specific monitoring (BP, Urine, Oxygen, HR) when the patient's metrics indicate it is clinically necessary.
-5. Base all answers strictly on established clinical guidelines. Do not generate random, incorrect, or irrelevant medical advice. Avoid vague suggestions.
-
-Please provide a clear, professional, medically accurate answer structured with headings. Keep it concise but comprehensive. Use markdown for headings.
+1. Provide your response in clear, plain, conversational English that is easy for a doctor or nurse to quickly read and understand.
+2. Analyze the patient condition based on the data.
+3. Explain the predicted ML Risk Level (${patientData.riskLevel || 'Unknown'}).
+4. Explain possible causes for the condition.
+5. Recommend precautions.
+6. Recommend fluid management and whether blood transfusion should be considered.
+7. Explain possible complications.
+8. Base all answers strictly on established clinical guidelines.
+9. VERY IMPORTANT: DO NOT use any markdown formatting (like asterisks for bold, hashes for headers, or dashes for lists). DO NOT use LaTeX, math symbols, or dense medical jargon when simpler terms exist. Write in clear, straightforward paragraphs without bullet points. Keep it concise but comprehensive.
 `;
       } else {
         prompt = `
@@ -375,6 +377,7 @@ PATIENT INFORMATION:
 - Surgery Type: ${patientData.surgeryType}
 - Allergies: ${patientData.allergies || 'None'}
 - Medical History: ${patientData.medicalNotes || 'None'}
+- ML Risk Prediction: ${patientData.riskLevel || 'Unknown'} (Confidence: ${(patientData.confidence || 0) * 100}%)
 
 INTRAOPERATIVE MEASUREMENTS:
 - Small Gauze Count: ${surgeryData.smallGauzeCount || 0} pcs × ${surgeryData.smallGauzeValue || 0} ml = ${surgeryData.smallGauzeBlood || 0} ml
@@ -388,7 +391,7 @@ INTRAOPERATIVE MEASUREMENTS:
 - Urine Output: ${surgeryData.urineCollected || 0} ml
 - TOTAL FLUID LOSS: ${surgeryData.totalFluidLoss || 0} ml
 
-Based on the patient information and surgery measurements above, automatically evaluate the case and suggest treatment protocols. 
+Based on the patient information, ML Risk Prediction, and surgery measurements above, automatically evaluate the case and suggest treatment protocols. 
 Be highly accurate and clinically precise. Return your assessment in the following JSON format. Ensure all suggestions (such as Blood Transfusion, Crystalloid/Colloid Fluid, Electrolyte Replacement, ICU Observation, CBC/Hemoglobin tests, and vital monitoring) are dynamically suggested when blood/fluid loss values indicate clinical necessity.
 
 Return ONLY valid JSON, no markdown code block fences:
@@ -418,11 +421,37 @@ Return ONLY valid JSON, no markdown code block fences:
 `;
       }
 
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
-
+      let text;
       if (question) {
+        const historyData = req.body.chatHistory || [];
+        const formattedHistory = historyData.map(msg => ({
+          role: msg.role === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.content }]
+        }));
+        
+        const chat = model.startChat({
+          history: formattedHistory
+        });
+        const result = await chat.sendMessage(prompt);
+        text = result.response.text();
+        
+        // Save to MongoDB
+        try {
+          const ChatHistory = require('../models/ChatHistory');
+          await ChatHistory.create({
+            patientId: patientData._id || patientData.id,
+            doctorId: req.userId,
+            userMessage: question,
+            geminiResponse: text
+          });
+        } catch (dbErr) {
+          console.error('Failed to save chat history to MongoDB', dbErr);
+        }
+        
         return res.json({ answer: text });
+      } else {
+        const result = await model.generateContent(prompt);
+        text = result.response.text();
       }
 
       // Parse JSON response for full analysis
@@ -435,10 +464,12 @@ Return ONLY valid JSON, no markdown code block fences:
       }
 
     } catch (apiError) {
-      // If the Gemini API fails (e.g. invalid key, quota limit), silently fallback to local rule-engine
-      console.warn("Gemini API failed, using intelligent local fallback. Error:", apiError.message);
+      // If the Gemini API fails (e.g. invalid key, quota limit), inform the client
+      console.warn("Gemini API failed:", apiError.message);
       if (question) {
-        return res.json({ answer: getMockResponse(question) });
+        return res.json({ 
+          answer: "AI Medical Assistant is temporarily unavailable. Please try again later."
+        });
       }
       return res.json({ analysis: getFallbackAnalysis() });
     }
@@ -447,6 +478,29 @@ Return ONLY valid JSON, no markdown code block fences:
     // Top level catch just in case anything else breaks outside the Gemini block
     console.error('AI Analysis Critical Error:', err);
     res.status(500).json({ message: 'AI analysis failed critically', error: err.message });
+  }
+};
+
+/**
+ * GET /api/ai/chat/:patientId
+ * Fetch chat history for a patient
+ */
+exports.getChatHistory = async (req, res) => {
+  try {
+    const ChatHistory = require('../models/ChatHistory');
+    const { patientId } = req.params;
+    
+    const history = await ChatHistory.find({ patientId }).sort({ timestamp: 1 });
+    
+    const formattedHistory = [];
+    history.forEach(item => {
+      formattedHistory.push({ role: 'user', content: item.userMessage });
+      formattedHistory.push({ role: 'ai', content: item.geminiResponse });
+    });
+    
+    res.json(formattedHistory);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error fetching chat history', error: err.message });
   }
 };
 

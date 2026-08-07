@@ -13,6 +13,8 @@ const patientSchema = new mongoose.Schema({
   surgeryDate: { type: Date, required: true },
   status: { type: String, enum: ['Active', 'Discharged', 'Critical', 'Archived'], default: 'Active' },
   dischargedAt: { type: Date, default: null }, // Set when status changes to Discharged
+  riskLevel: { type: String, default: 'Unknown' },
+  confidence: { type: Number, default: 0 },
   editLog: [
     {
       editedBy: { type: mongoose.Schema.Types.ObjectId },

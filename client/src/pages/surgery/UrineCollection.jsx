@@ -61,7 +61,7 @@ export default function UrineCollection() {
           <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest mt-4 text-center">Enter 0 if no catheter output was recorded</p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <button onClick={() => navigate(`/${role}/surgery/${patientId}/step4`)} className="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-800/40 text-slate-400 hover:text-white border border-slate-800/50 hover:border-slate-700 transition-all">
             <FaArrowLeft />
           </button>

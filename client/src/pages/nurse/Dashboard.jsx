@@ -73,6 +73,18 @@ export default function NurseDashboard() {
   const toggleTask = (id) => {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
   };
+  const currentHour = new Date().getHours();
+  const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+  const roleTitle = user?.role === 'doctor' ? 'Doctor' : 'Nurse';
+  
+  let cleanName = user?.fullName || '';
+  if (cleanName.includes('@')) {
+    cleanName = cleanName.split('@')[0];
+  }
+  cleanName = cleanName.replace(/^(Dr\.|Dr|Doctor|Nurse)\s+/i, '');
+  let firstName = cleanName.split(' ')[0] || '';
+  firstName = firstName.replace(/[0-9]/g, '');
+  firstName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase() : '';
 
   return (
     <div className="space-y-8">
@@ -84,7 +96,7 @@ export default function NurseDashboard() {
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
             <h2 className="text-3xl md:text-4xl font-black text-white leading-tight">
-              Nurse Station Dashboard 👋
+              {greeting}, {roleTitle} {firstName} 👋
             </h2>
             <div className="text-emerald-300/80 font-medium mt-2 flex items-center gap-3">
               <span className="flex items-center gap-1.5 font-black uppercase tracking-[0.15em] text-[10px]"><FaUserNurse className="text-xs" /> {user?.fullName || 'STAFF'}</span>

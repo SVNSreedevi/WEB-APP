@@ -5,7 +5,7 @@ import {
   FaArrowLeft, FaTint, FaProcedures, FaUser, FaPlus, FaCalendarAlt, 
   FaDownload, FaEdit, FaBrain, FaReply, FaChevronDown, FaChevronUp, 
   FaArchive, FaClock, FaTimes, FaSave, FaCheckCircle, FaShieldAlt,
-  FaHeartbeat, FaClipboardList, FaCapsules
+  FaHeartbeat, FaClipboardList, FaCapsules, FaExclamationTriangle
 } from 'react-icons/fa';
 import { MdBloodtype, MdClose } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -491,6 +491,37 @@ export default function PatientDetail() {
               <Field label="Surgery Type" value={patient.surgeryType} />
               <Field label="Date" value={new Date(patient.surgeryDate).toLocaleDateString('en-US', { day: '2-digit', month: 'short' })} />
               {patient.dischargedAt && <Field label="Discharged" value={new Date(patient.dischargedAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })} />}
+            </div>
+
+            {/* AI Prediction Card */}
+            <div className="w-full mt-8 bg-slate-900/50 border border-slate-700/60 rounded-2xl p-5 text-left relative overflow-hidden shadow-sm">
+              <div className={`absolute top-0 left-0 w-1.5 h-full ${!patient.riskLevel || patient.riskLevel === 'Unknown' ? 'bg-slate-500' : patient.riskLevel === 'Low' ? 'bg-emerald-500' : patient.riskLevel === 'Moderate' ? 'bg-orange-500' : patient.riskLevel === 'High' ? 'bg-red-500' : 'bg-red-800'}`}></div>
+              <div className="text-[11px] text-slate-400 font-black uppercase tracking-widest mb-4 flex items-center gap-2 pl-2">
+                <FaBrain className="text-violet-400" /> AI Prediction
+              </div>
+              <div className="grid grid-cols-2 gap-4 pl-2">
+                <div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Risk Level</div>
+                  <div className={`text-xl font-black ${!patient.riskLevel || patient.riskLevel === 'Unknown' ? 'text-slate-400' : patient.riskLevel === 'Low' ? 'text-emerald-400' : patient.riskLevel === 'Moderate' ? 'text-orange-400' : patient.riskLevel === 'High' ? 'text-red-400' : 'text-red-700'}`}>
+                    {patient.riskLevel || 'Unknown'}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">Confidence</div>
+                  <div className="text-xl font-black text-white">
+                    {!patient.riskLevel || patient.riskLevel === 'Unknown' ? (
+                      <span className="text-sm text-slate-500">AI Prediction Unavailable</span>
+                    ) : (
+                      `${(patient.confidence * 100).toFixed(2)}%`
+                    )}
+                  </div>
+                </div>
+                <div className="col-span-2 mt-2">
+                  <div className="text-[9px] text-slate-500 font-medium">
+                    Last Updated: {new Date(patient.updatedAt).toLocaleString()}
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="w-full h-px bg-slate-800/50 my-8" />

@@ -93,7 +93,7 @@ export default function InsensibleLoss() {
           </motion.div>
         )}
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <button onClick={() => navigate(`/${role}/surgery/${patientId}/step3`)} className="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-800/40 text-slate-400 hover:text-white border border-slate-800/50 hover:border-slate-700 transition-all">
             <FaArrowLeft />
           </button>

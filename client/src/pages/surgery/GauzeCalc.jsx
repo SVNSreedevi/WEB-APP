@@ -165,7 +165,7 @@ export default function GauzeCalc() {
           </motion.div>
         )}
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <button onClick={calculate} className="btn-secondary !py-4 flex-1 !text-xs !font-black !rounded-2xl border-slate-700">
             <FaCalculator /> CALCULATE VOLUME
           </button>

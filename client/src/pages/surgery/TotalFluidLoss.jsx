@@ -257,7 +257,7 @@ export default function TotalFluidLoss() {
           ) : (
             <div className="space-y-4">
               {/* Action row 1: Back + Find Issue */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <button onClick={() => navigate(`/${role}/surgery/${patientId}/step5`)} className="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-800/40 text-slate-400 hover:text-white border border-slate-800/50 hover:border-slate-700 transition-all flex-shrink-0">
                   <FaArrowLeft />
                 </button>
@@ -272,7 +272,7 @@ export default function TotalFluidLoss() {
                 </button>
               </div>
               {/* Action row 2: Save + PDF */}
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <button onClick={handleSave} disabled={saving} className={`btn-primary flex-1 !py-4 !text-xs !font-black !rounded-2xl ${role === 'doctor' ? 'shadow-blue-glow' : 'shadow-emerald-glow !bg-emerald-600 hover:!bg-emerald-700'}`}>
                   {saving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" /> : <><FaSave className="mr-2" />SAVE RECORD</>}
                 </button>
@@ -299,7 +299,7 @@ export default function TotalFluidLoss() {
               allergies: '—',
               medicalNotes: '—',
             }}
-            surgeryData={wf}
+            surgeryData={{ ...wf, totalFluidLoss: result.totalFluidLoss }}
             onClose={() => setShowChatbot(false)}
             onSaveAnalysis={handleSaveAnalysis}
           />

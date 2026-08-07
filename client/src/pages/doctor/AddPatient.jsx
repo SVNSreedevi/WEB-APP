@@ -21,7 +21,7 @@ export default function AddPatient() {
   const [form, setForm] = useState({
     patientName: '', age: '', gender: 'Male',
     mobileNumber: '', weight: '', bloodGroup: '',
-    surgeryType: '',
+    surgeryType: '', otherSurgeryType: '',
     allergies: 'None', medicalNotes: '', surgeryDate: new Date().toISOString().split('T')[0],
     status: 'Active',
   });
@@ -58,6 +58,7 @@ export default function AddPatient() {
     if (!form.age || form.age < 1 || form.age > 120) e.age = 'Valid age (1–120) required';
     if (!form.weight || form.weight < 1) e.weight = 'Valid weight required';
     if (!form.surgeryType) e.surgeryType = 'Surgery type is required';
+    if (form.surgeryType === 'Other' && !form.otherSurgeryType.trim()) e.otherSurgeryType = 'Please specify surgery type';
     if (!form.surgeryDate) e.surgeryDate = 'Surgery date is required';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -67,8 +68,18 @@ export default function AddPatient() {
     e.preventDefault();
     if (!validate()) return toast.error('Please fix validation errors');
     setLoading(true);
+    
+    const submitData = {
+      ...form,
+      surgeryType: form.surgeryType === 'Other' ? form.otherSurgeryType : form.surgeryType
+    };
+    delete submitData.otherSurgeryType;
+    if (!submitData.appointedNurse) {
+      delete submitData.appointedNurse;
+    }
+
     try {
-      await api.post('/patients', form);
+      await api.post('/patients', submitData);
       toast.success('Patient added successfully!');
       navigate(`/${role}/patients`);
     } catch (err) {
@@ -76,7 +87,7 @@ export default function AddPatient() {
         // Mocking a successful save for demonstration silently
         const mockId = 'mock-' + Date.now();
         const mockPatient = { 
-          ...form, 
+          ...submitData, 
           _id: mockId, 
           createdBy: user?.id || user?._id || 'demo-user-id',
           createdByRole: role,
@@ -90,7 +101,8 @@ export default function AddPatient() {
         toast.success('Patient registered successfully!');
         navigate(`/${role}/patients`);
       } else {
-        toast.error(err.response?.data?.message || 'Failed to add patient');
+        const errorDetail = err.response?.data?.error ? ` (${err.response.data.error})` : '';
+        toast.error((err.response?.data?.message || 'Failed to add patient') + errorDetail);
       }
     } finally {
       setLoading(false);
@@ -183,6 +195,14 @@ export default function AddPatient() {
                   {SURGERY_TYPES.map(s => <option key={s}>{s}</option>)}
                 </select>
                 {errors.surgeryType && <p className="text-[10px] text-red-400 font-bold mt-1.5 uppercase tracking-tight">{errors.surgeryType}</p>}
+                
+                {form.surgeryType === 'Other' && (
+                  <div className="mt-4">
+                    <label className="text-[11px] text-slate-400 font-black uppercase tracking-widest mb-2 block">Specify Surgery Type *</label>
+                    <input name="otherSurgeryType" value={form.otherSurgeryType} onChange={handleChange} placeholder="Enter surgery type" className={errors.otherSurgeryType ? 'input-error' : 'input !bg-slate-800/40 border-slate-800'} />
+                    {errors.otherSurgeryType && <p className="text-[10px] text-red-400 font-bold mt-1.5 uppercase tracking-tight">{errors.otherSurgeryType}</p>}
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -224,7 +244,7 @@ export default function AddPatient() {
            <label className="text-[11px] text-slate-400 font-black uppercase tracking-widest mb-3 block">Pre-Operative Medical Notes</label>
            <textarea name="medicalNotes" value={form.medicalNotes} onChange={handleChange} placeholder="Enter any specific medical history or instructions..." rows={4} className="input !bg-slate-800/40 border-slate-800 resize-none" />
            
-           <div className="flex gap-4 justify-end mt-8">
+           <div className="flex flex-col sm:flex-row gap-4 justify-end mt-8">
              <button type="button" onClick={() => navigate(-1)} className="btn-secondary !py-3 !px-8 !text-xs !font-black !rounded-xl">
                CANCEL
              </button>

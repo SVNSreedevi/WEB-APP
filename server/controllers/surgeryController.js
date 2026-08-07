@@ -60,6 +60,8 @@ exports.getSurgery = async (req, res) => {
   }
 };
 
+const { predictRiskLevel } = require('../utils/aiHelper');
+
 // POST create surgery record
 exports.createSurgery = async (req, res) => {
   try {
@@ -84,7 +86,40 @@ exports.createSurgery = async (req, res) => {
     };
 
     const record = await SurgeryRecord.create(data);
-    res.status(201).json(record);
+
+    // AI Prediction Workflow
+    // Exclude derived fields, map explicitly for AI Helper
+    const predictionPayload = {
+      Age: patient.age,
+      Gender: patient.gender,
+      Weight_kg: patient.weight,
+      Blood_Group: patient.bloodGroup,
+      Surgery_Type: patient.surgeryType,
+      Small_Gauze_Count: req.body.smallGauzeCount,
+      Small_Gauze_Value_ml: req.body.smallGauzeValue,
+      Large_Gauze_Count: req.body.largeGauzeCount,
+      Large_Gauze_Value_ml: req.body.largeGauzeValue,
+      Suction_ml: req.body.suctionBottleValue,
+      Irrigation_ml: req.body.salineUsed,
+      Duration_hr: req.body.surgeryDuration,
+      Urine_Collected_ml: req.body.urineCollected
+    };
+
+    const aiResult = await predictRiskLevel(predictionPayload);
+
+    // Update corresponding patient with new riskLevel and confidence
+    patient.riskLevel = aiResult.riskLevel;
+    patient.confidence = aiResult.confidence;
+    await patient.save();
+
+    // Return both the record and the updated prediction info
+    res.status(201).json({
+      ...record.toObject(),
+      patientUpdated: {
+        riskLevel: aiResult.riskLevel,
+        confidence: aiResult.confidence
+      }
+    });
   } catch (err) {
     res.status(400).json({ message: 'Validation error', error: err.message });
   }
